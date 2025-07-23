@@ -14,9 +14,9 @@ for await (let item of products.iterator({
     includeVector: true
   })) {
     console.log(item.uuid, item.properties);
-    console.log(item.vectors);
+ 
 }
-    console.log(client)
+   
 }
 
 search();

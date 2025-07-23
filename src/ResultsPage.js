@@ -1,13 +1,12 @@
 // src/ResultsPage.js
 import React from 'react';
 
-// Example mock data (replace with actual API data later)
-
+// Add API data here
 
 export default function ResultsPage({ results, loading, error, onBack }) {
   return (
     <div className="results-page" style={{ padding: '2rem', background: '#fafbfc', minHeight: '100vh' }}>
-      <button onClick={onBack} /* styling here */>⬅ Back</button>
+     
 
       {loading && (
         <div className="text-center text-gray-500 my-12 text-lg">Loading...</div>

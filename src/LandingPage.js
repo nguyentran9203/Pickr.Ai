@@ -10,7 +10,6 @@ const suggestions = [
   "Gaming chair"
 ];
 
-// Example category options - edit as needed!
 const categories = [
   "All",
   "Phone",
@@ -28,64 +27,73 @@ export default function LandingPage({ onSearch }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Send category as well
-    onSearch(query, minPrice, maxPrice, category);
+    onSearch({ query, minPrice, maxPrice, category });
+  };
+
+  const handleSuggestionClick = (text) => {
+    setQuery(text);
   };
 
   return (
     <div className="landing">
-      <img src={teicaLogo} alt="TEICA.AI Logo" />
+      <img src={teicaLogo} alt="TEICA.AI Logo" className="logo" />
       <h1>What are you looking for?</h1>
 
-      <div className="search-container">
-        <form id="searchForm" onSubmit={handleSubmit}>
+      <form id="searchForm" onSubmit={handleSubmit} className="search-container">
+        <input
+          type="text"
+          id="searchInput"
+          name="q"
+          placeholder="e.g. phone with good camera"
+          className="search-bar"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+        />
+
+        <div className="price-inputs">
           <input
-            type="text"
-            id="searchInput"
-            name="q"
-            placeholder="What are you looking for?"
-            className="search-bar"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
+            type="number"
+            id="minPrice"
+            name="minPrice"
+            placeholder="Min Price"
+            step="0.01"
+            value={minPrice}
+            onChange={e => setMinPrice(e.target.value)}
           />
-          <div className="price-inputs">
-            <input
-              type="number"
-              id="minPrice"
-              name="minPrice"
-              placeholder="Min Price"
-              step="0.01"
-              value={minPrice}
-              onChange={e => setMinPrice(e.target.value)}
-            />
-            <input
-              type="number"
-              id="maxPrice"
-              name="maxPrice"
-              placeholder="Max Price"
-              step="0.01"
-              value={maxPrice}
-              onChange={e => setMaxPrice(e.target.value)}
-            />
-            <select
-              id="category"
-              name="category"
-              className="category-select"
-              value={category}
-              onChange={e => setCategory(e.target.value)}
-            >
-              {categories.map((cat, idx) => (
-                <option key={idx} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-          <button type="submit" className="search-button">Search</button>
-        </form>
-      </div>
+          <input
+            type="number"
+            id="maxPrice"
+            name="maxPrice"
+            placeholder="Max Price"
+            step="0.01"
+            value={maxPrice}
+            onChange={e => setMaxPrice(e.target.value)}
+          />
+          <select
+            id="category"
+            name="category"
+            className="category-select"
+            value={category}
+            onChange={e => setCategory(e.target.value)}
+          >
+            {categories.map((cat, idx) => (
+              <option key={idx} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
+
+        <button type="submit" className="search-button">Search</button>
+      </form>
 
       <div className="suggestions">
         {suggestions.map((text, idx) => (
-          <div key={idx} className="suggestion">{text}</div>
+          <div
+            key={idx}
+            className="suggestion"
+            onClick={() => handleSuggestionClick(text)}
+          >
+            {text}
+          </div>
         ))}
       </div>
 

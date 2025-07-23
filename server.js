@@ -1,94 +1,70 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const weaviate = require('weaviate-client') ;
+const weaviate = require('weaviate-client');
+require('dotenv').config();
 
 app.use(cors());
 app.use(express.json());
-require ('dotenv').config();
-// Example mock products
-const mockResults = [
-  {
-    image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80',
-    brand: 'Samsung',
-    model: 'Galaxy S24 Ultra',
-    description: 'Amazing camera and all-day battery. Perfect for photographers!',
-    price: 999
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80',
-    brand: 'Apple',
-    model: 'iPhone 15 Pro',
-    description: 'Lightning fast. Best-in-class video and photo performance.',
-    price: 1199
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1526178613658-3d6b6ce3c6c7?auto=format&fit=crop&w=400&q=80',
-    brand: 'Sony',
-    model: 'WH-1000XM5',
-    description: 'Top-rated wireless noise-cancelling headphones.',
-    price: 349
-  }
-];
 
+console.log('🔑 OpenAI key loaded:', process.env.OPENAI_API_KEY?.slice(0, 6) + '...');
+console.log('🌐 Weaviate URL:', process.env.WEAVIATE_URL);
 
+// 🔍 POST /api/search
 app.post('/api/search', async (req, res) => {
   const { query, minPrice, maxPrice, category } = req.body;
-  const filters = [];
-
-  if (minPrice) filters.push({ path: ["price"], operator: "GreaterThanEqual", valueNumber: parseFloat(minPrice) });
-  if (maxPrice) filters.push({ path: ["price"], operator: "LessThanEqual", valueNumber: parseFloat(maxPrice) });
-  if (category && category !== "All") filters.push({ path: ["category"], operator: "Equal", valueText: category });
-
-  const where =
-    filters.length > 1
-      ? { operator: "And", operands: filters }
-      : filters.length === 1
-      ? filters[0]
-      : undefined;
 
   try {
     const client = await weaviate.connectToWeaviateCloud(
       process.env.WEAVIATE_URL,
-      { 
+      {
         authCredentials: new weaviate.ApiKey(process.env.WEAVIATE_API_KEY),
-        headers: { 'X-OpenAI-Api-Key': process.env.OPENAI_API_KEY }
+        headers: {
+          'X-OpenAI-Api-Key': process.env.MY_OPEN_AI_API_KEY,
+        },
       }
     );
 
-    const result = await client.graphql.get()
-      .withClassName('Product')
-      .withFields('brand model description price category image')
-      .withNearText(query ? { concepts: [query] } : undefined)
-      .withWhere(where)
-      .withLimit(18)
-      .do();
+    const products = client.collections.use('Products');
 
-    res.json(result.data.Get.Product || []);
+    // Convert query safely to string
+    const queryString = typeof query === 'string'
+      ? query
+      : (typeof query === 'object' && query !== null ? JSON.stringify(query) : '');
+
+   
+    const filters = [];
+
+    if (minPrice && !isNaN(parseFloat(minPrice))) {
+      filters.push({ path: ['price'], operator: 'GreaterThanEqual', valueNumber: parseFloat(minPrice) });
+    }
+    if (maxPrice && !isNaN(parseFloat(maxPrice))) {
+      filters.push({ path: ['price'], operator: 'LessThanEqual', valueNumber: parseFloat(maxPrice) });
+    }
+    if (category && category !== 'All') {
+      filters.push({ path: ['category'], operator: 'Equal', valueText: category });
+    }
+
+    const where = filters.length > 0 ? { operator: 'And', operands: filters } : undefined;
+
+    console.log('Search query:', queryString);
+    
+
+    const result = await products.query.bm25({
+      query: queryString,
+      ...(where && { where }),
+      limit: 50,
+      returnProperties: ['brand', 'model', 'description', 'price', 'category', 'image'],
+    });
+
+    res.json(result.objects.map(obj => obj.properties));
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Weaviate search failed.' });
+    console.error('Weaviate error:', err);
+    res.status(500).json({ error: 'Weaviate search failed.', details: err.message });
   }
 });
 
+
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`API listening on port ${PORT}`));
-//weaviate client setup
-const MY_WEAVIATE_URL = process.env.WEAVIATE_URL;
-const MY_API_KEY = process.env.WEAVIATE_API_KEY;
-const MY_OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
-const search = async () => {
-    const client = await weaviate.connectToWeaviateCloud(
-        MY_WEAVIATE_URL, { 
-          authCredentials: new weaviate.ApiKey(MY_API_KEY), 
-          headers: {
-            'X-OpenAI-Api-Key': MY_OPENAI_API_KEY,
-          }
-        } 
-      )
-
-    console.log(client)
-}
-
-search()

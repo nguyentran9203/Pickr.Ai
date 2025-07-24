@@ -50,7 +50,7 @@ app.post('/api/search', async (req, res) => {
     console.log('Search query:', queryString);
     
 
-    const result = await products.query.bm25({
+    const result = await products.query.bm25('Products', {
       query: queryString,
       ...(where && { where }),
       limit: 50,

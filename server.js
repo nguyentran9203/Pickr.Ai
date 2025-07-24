@@ -2,18 +2,20 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const weaviate = require('weaviate-client');
+const { parse } = require('dotenv');
+const { Filters } = weaviate;
 require('dotenv').config();
 
 app.use(cors());
 app.use(express.json());
 
-console.log('🔑 OpenAI key loaded:', process.env.OPENAI_API_KEY?.slice(0, 6) + '...');
-console.log('🌐 Weaviate URL:', process.env.WEAVIATE_URL);
+console.log('OpenAI key loaded:', process.env.OPENAI_API_KEY?.slice(0, 6) + '...');
+console.log('Weaviate URL:', process.env.WEAVIATE_URL);
 
 // 🔍 POST /api/search
 app.post('/api/search', async (req, res) => {
   const { query, minPrice, maxPrice, category } = req.body;
-
+ const filters = [];
   try {
     const client = await weaviate.connectToWeaviateCloud(
       process.env.WEAVIATE_URL,
@@ -32,31 +34,23 @@ app.post('/api/search', async (req, res) => {
       ? query
       : (typeof query === 'object' && query !== null ? JSON.stringify(query) : '');
 
-   
-    const filters = [];
-
-    if (minPrice && !isNaN(parseFloat(minPrice))) {
-      filters.push({ path: ['price'], operator: 'GreaterThanEqual', valueNumber: parseFloat(minPrice) });
-    }
-    if (maxPrice && !isNaN(parseFloat(maxPrice))) {
-      filters.push({ path: ['price'], operator: 'LessThanEqual', valueNumber: parseFloat(maxPrice) });
-    }
-    if (category && category !== 'All') {
-      filters.push({ path: ['category'], operator: 'Equal', valueText: category });
-    }
-
-    const where = filters.length > 0 ? { operator: 'And', operands: filters } : undefined;
+  
 
     console.log('Search query:', queryString);
     
 
-    const result = await products.query.bm25('Products', {
-      query: queryString,
-      ...(where && { where }),
-      limit: 50,
-      returnProperties: ['brand', 'model', 'description', 'price', 'category', 'image'],
-    });
 
+const result = await products.query.hybrid('Products', {
+  query: queryString,
+  limit: 50,
+  returnProperties: ['brand', 'model', 'description', 'price', 'category', 'image'],
+  filters: Filters.or(
+   products.filter.byProperty('price').greaterThan(parseFloat(minPrice || 0)),
+      products.filter.byProperty('price').lessThan(parseFloat(maxPrice || Number.MAX_VALUE)),
+  )
+});
+
+console.log('Price filters:', minPrice, maxPrice);
     res.json(result.objects.map(obj => obj.properties));
   } catch (err) {
     console.error('Weaviate error:', err);

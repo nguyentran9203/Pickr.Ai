@@ -38,43 +38,47 @@ app.post('/api/search', async (req, res) => {
     
 
 const products = client.collections.use('Products');
-const result = await products.query.fetchObjects('price', {
-  query: queryString,
-  returnProperties: ['brand', 'model', 'price', 'image', 'description', 'category'],
-  filters: Filters.and(
-    products.filter.byProperty('price').lessThan(parseFloat(maxPrice)),
-    products.filter.byProperty('price').greaterThan(parseFloat(minPrice)),
-    products.filter.byProperty('category').equal(category)
-  ),
-  limit: 50
-});
+const min = Number(minPrice);
+const max = Number(maxPrice);
 
-console.log('Search results:', result.objects.length, 'items found');
-  
-for (let object of result.objects) {
-  console.log(JSON.stringify(object.properties, null, 2));
-}
-
-if (!result.objects.length) {
-  console.warn("No matching results found for:", { queryString, minPrice, maxPrice, category });
-}
-
-console.log('Price filters:', minPrice, maxPrice);
-for (const obj of result.objects) {
-  console.log(`${obj.properties.brand} - ${obj.properties.model} => $${obj.properties.price}`);
-}
-
-   for (let object of result.objects) {
-  console.log(JSON.stringify(object.properties, null, 2));
+const result = await products.query.bm25(
+  'phone',
+  {
+    alpha: 0.5,
+    limit: 50,
+    filters: Filters.and(
+      products.filter.byProperty('price').greaterThan(min),
+      products.filter.byProperty('price').lessThan(max),
+      products.filter.byProperty('category').equal(category)
+    ),
+    returnProperties: [
+      'brand',
+      'model',
+      'description',
+      'price',
+      'category',
+      'image'
+    ]
   }
-    res.json(result.objects.map(obj => obj.properties));
-  } catch (err) {
-    console.error('Weaviate error:', err);
-    res.status(500).json({ error: 'Weaviate search failed.', details: err.message });
+);
+
+
+console.log(result.objects.length, 'results found', min, max, category);
+  if (result.objects.length === 0) {
+    return res.status(404).json({ message: 'No products found' });
+  }
+console.log('Search results:', result.objects.map(obj => obj.properties));
+  // Return
+res.json(result.objects.map(obj => ({
+    id: obj.id,
+    ...obj.properties
+  })));
+
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`API listening on port ${PORT}`));

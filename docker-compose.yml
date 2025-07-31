@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  weaviate:
+    image: semitechnologies/weaviate:1.24.8
+    ports:
+      - "8080:8080"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 50
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: "/var/lib/weaviate"
+      DEFAULT_VECTORIZER_MODULE: text2vec-openai
+      ENABLE_MODULES: text2vec-openai
+      OPENAI_APIKEY: ${MY_OPEN_AI_API_KEY}
+      CLUSTER_HOSTNAME: 'node1'
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - weaviate
+    env_file:
+      - .env
+
+volumes:
+  weaviate_data:

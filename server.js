@@ -13,7 +13,14 @@ console.log('Weaviate URL:', process.env.WEAVIATE_URL);
 
 // 🔍 POST /api/search
 app.post('/api/search', async (req, res) => {
-  const { query, minPrice, maxPrice, category } = req.body;
+  const {
+    minPrice,
+    maxPrice,
+    category,
+    battery,
+  } = req.body;
+
+ 
   try {
     const client = await weaviate.connectToWeaviateCloud(
       process.env.WEAVIATE_URL,
@@ -25,36 +32,49 @@ app.post('/api/search', async (req, res) => {
       }
     );
 
-   
 
-    // Convert query safely to string
-    const queryString = typeof query === 'string'
-      ? query
-      : (typeof query === 'object' && query !== null ? JSON.stringify(query) : '');
 
-  
+    const products = client.collections.use('Products');
 
-    console.log('Search query:', queryString);
+    const filters = [];
+
+    const min = Number(minPrice);
+    const max = Number(maxPrice);
+    const batteryImportance = Number(battery);
+    
+    if (!isNaN(min)) filters.push(products.filter.byProperty('price').greaterThan(min));
+    if (!isNaN(max)) filters.push(products.filter.byProperty('price').lessThan(max));
+
+    if (category && category !== 'All') {
+      filters.push(products.filter.byProperty('category').equal(category));
+    }
+
     
 
-const products = client.collections.use('Products');
-const min = Number(minPrice);
-const max = Number(maxPrice);
+    if (batteryImportance >= 6) {
+  filters.push(products.filter.byProperty('battery').greaterThan(4000));
+    }
+  
+
 
 const result = await products.query.bm25(
   'phone',
   {
     alpha: 0.5,
     limit: 50,
-    filters: Filters.and(
+    filters: Filters.or(
       products.filter.byProperty('price').greaterThan(min),
       products.filter.byProperty('price').lessThan(max),
-      products.filter.byProperty('category').equal(category)
+      products.filter.byProperty('category').equal(category),
+  
+      products.filter.byProperty('battery').equal(batteryImportance),
     ),
     returnProperties: [
       'brand',
       'model',
       'description',
+      'battery',
+  
       'price',
       'category',
       'image'
@@ -63,7 +83,7 @@ const result = await products.query.bm25(
 );
 
 
-console.log(result.objects.length, 'results found', min, max, category);
+console.log(result.objects.length, 'results found', min, max, category, cameraImportance, batteryImportance);
   if (result.objects.length === 0) {
     return res.status(404).json({ message: 'No products found' });
   }

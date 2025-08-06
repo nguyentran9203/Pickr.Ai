@@ -1,21 +1,21 @@
-brand,model,description,price,category,image
-Samsung,Galaxy S21,"Flagship smartphone with 120Hz AMOLED display",799.99,Phone,https://example.com/images/galaxy-s21.jpg
-Apple,iPhone 14,"Latest iPhone with A15 Bionic chip and improved cameras",899.99,Phone,https://example.com/images/iphone14.jpg
-OnePlus,OnePlus 11,"High-end Android phone with Snapdragon 8 Gen 2",699.00,Phone,https://example.com/images/oneplus11.jpg
-Sony,Xperia 5 V,"Compact phone with advanced camera system",849.50,Phone,https://example.com/images/xperia5v.jpg
-Google,Pixel 8,"Pure Android with exceptional AI-powered camera",749.00,Phone,https://example.com/images/pixel8.jpg
-Xiaomi,Mi 12,"Powerful smartphone with fast charging and AMOLED display",699.99,Phone,https://example.com/images/mi12.jpg
-Huawei,P50 Pro,"Premium phone with Leica camera system",899.00,Phone,https://example.com/images/p50pro.jpg
-Oppo,Find X5 Pro,"Flagship phone with stunning design and performance",1099.00,Phone,https://example.com/images/findx5pro.jpg
-Motorola,Edge 30 Ultra,"High-performance phone with 200MP camera",999.99,Phone,https://example.com/images/edge30ultra.jpg
-Nokia,XR20,"Rugged smartphone with military-grade durability",499.99,Phone,https://example.com/images/xr20.jpg
-Asus,Rog Phone 6,"Gaming phone with high refresh rate display",999.00,Phone,https://example.com/images/rogphone6.jpg
-Realme,GT 2 Pro,"Affordable flagship with Snapdragon 8 Gen 1",749.99,Phone,https://example.com/images/gt2pro.jpg
-Vivo,X80 Pro,"Camera-focused phone with Zeiss optics",899.99,Phone,https://example.com/images/x80pro.jpg
-LG,V60 ThinQ,"Dual-screen phone with Snapdragon 865",599.00,Phone,https://example.com/images/v60thinq.jpg
-HTC,U12 Life,"Mid-range phone with dual camera setup",399.99,Phone,https://example.com/images/u12life.jpg
-ZTE,Axon 20,"World's first phone with under-display camera",549.00,Phone,https://example.com/images/axon20.jpg
-BlackBerry,Key2,"Smartphone with physical keyboard and Android OS",499.00,Phone,https://example.com/images/key2.jpg
-Lenovo,Legion Phone Duel 2,"Gaming phone with dual cooling system",799.99,Phone,https://example.com/images/legionphone.jpg
-Alcatel,1S,"Budget-friendly smartphone with decent performance",199.99,Phone,https://example.com/images/1s.jpg
-Panasonic,Toughbook FZ-T1,"Rugged smartphone designed for tough environments",899.99,Phone,https://example.com/images/toughbook.jpg
+brand,model,description,price,category,image,battery,camera
+Samsung,Galaxy S21,"Flagship smartphone with 120Hz AMOLED display",799.99,Phone,https://cdn.alloallo.media/catalog/product/samsung/galaxy-s/galaxy-s21/galaxy-s21-phantom-purple.jpg,4000,"64MP triple camera"
+Apple,iPhone 14,"Latest iPhone with A15 Bionic chip and improved cameras",899.99,Phone,https://files.refurbed.com/ii/iphone-14-plus-1662618558.jpg,3279,"12MP dual camera"
+OnePlus,OnePlus 11,"High-end Android phone with Snapdragon 8 Gen 2",699.00,Phone,https://cdn.alloallo.media/catalog/product/oneplus/oneplus-11/oneplus-11.jpg,5000,"50MP triple camera"
+Sony,Xperia 5 V,"Compact phone with advanced camera system",849.50,Phone,https://cdn.alloallo.media/catalog/product/sony/xperia-5-v/xperia-5-v.jpg,5000,"48MP triple camera with Zeiss optics"
+Google,Pixel 8,"Pure Android with exceptional AI-powered camera",749.00,Phone,https://cdn.alloallo.media/catalog/product/google/pixel-8/pixel-8.jpg,4575,"50MP dual camera with AI enhancements"
+Xiaomi,Mi 12,"Powerful smartphone with fast charging and AMOLED display",699.99,Phone,https://cdn.alloallo.media/catalog/product/xiaomi/mi-12/mi-12.jpg,4500,"50MP triple camera"
+Huawei,P50 Pro,"Premium phone with Leica camera system",899.00,Phone,https://example.com/images/p50pro.jpg,4360,"50MP Leica quad camera"
+Oppo,Find X5 Pro,"Flagship phone with stunning design and performance",1099.00,Phone,https://example.com/images/findx5pro.jpg,5000,"50MP Hasselblad triple camera"
+Motorola,Edge 30 Ultra,"High-performance phone with 200MP camera",999.99,Phone,https://example.com/images/edge30ultra.jpg,4610,"200MP main camera"
+Nokia,XR20,"Rugged smartphone with military-grade durability",499.99,Phone,https://example.com/images/xr20.jpg,4630,"48MP dual camera"
+Asus,Rog Phone 6,"Gaming phone with high refresh rate display",999.00,Phone,https://example.com/images/rogphone6.jpg,6000,"50MP triple camera"
+Realme,GT 2 Pro,"Affordable flagship with Snapdragon 8 Gen 1",749.99,Phone,https://example.com/images/gt2pro.jpg,5000,"50MP dual camera with microscope lens"
+Vivo,X80 Pro,"Camera-focused phone with Zeiss optics",899.99,Phone,https://example.com/images/x80pro.jpg,4700,"50MP Zeiss quad camera"
+LG,V60 ThinQ,"Dual-screen phone with Snapdragon 865",599.00,Phone,https://example.com/images/v60thinq.jpg,5000,"64MP dual camera"
+HTC,U12 Life,"Mid-range phone with dual camera setup",399.99,Phone,https://example.com/images/u12life.jpg,3600,"16MP + 5MP dual camera"
+ZTE,Axon 20,"World's first phone with under-display camera",549.00,Phone,https://example.com/images/axon20.jpg,4220,"64MP quad camera"
+BlackBerry,Key2,"Smartphone with physical keyboard and Android OS",499.00,Phone,https://example.com/images/key2.jpg,3500,"12MP + 8MP dual camera"
+Lenovo,Legion Phone Duel 2,"Gaming phone with dual cooling system",799.99,Phone,https://example.com/images/legionphone.jpg,5500,"64MP dual camera"
+Alcatel,1S,"Budget-friendly smartphone with decent performance",199.99,Phone,https://example.com/images/1s.jpg,4000,"13MP triple camera"
+Panasonic,Toughbook FZ-T1,"Rugged smartphone designed for tough environments",899.99,Phone,https://example.com/images/toughbook.jpg,3200,"8MP rear camera"
